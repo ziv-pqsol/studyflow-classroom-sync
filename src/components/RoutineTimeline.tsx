@@ -4,10 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Edit2, Trash2, BookOpen, Coffee, GraduationCap, Dumbbell, Utensils } from 'lucide-react';
-import { RoutineItem } from '@/pages/Index';
+import { RoutineItem } from '@/hooks/useRoutines';
 
 interface RoutineTimelineProps {
   routines: RoutineItem[];
+  loading: boolean;
   onDelete: (id: string) => void;
   onEdit: (id: string, routine: Partial<RoutineItem>) => void;
 }
@@ -20,7 +21,7 @@ const categoryConfig = {
   meal: { color: 'bg-yellow-500', icon: Utensils, label: 'Meal', badgeClass: 'bg-yellow-100 text-yellow-800' }
 };
 
-const RoutineTimeline: React.FC<RoutineTimelineProps> = ({ routines, onDelete, onEdit }) => {
+const RoutineTimeline: React.FC<RoutineTimelineProps> = ({ routines, loading, onDelete, onEdit }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const formatDuration = (minutes: number) => {
@@ -45,6 +46,26 @@ const RoutineTimeline: React.FC<RoutineTimelineProps> = ({ routines, onDelete, o
     
     return current >= routineTime && current <= endTimeStr;
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-4">
+              <div className="flex">
+                <div className="w-20 h-16 bg-gray-200 rounded mr-4"></div>
+                <div className="flex-1">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

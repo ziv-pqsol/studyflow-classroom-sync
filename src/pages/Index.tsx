@@ -3,76 +3,34 @@ import React, { useState } from 'react';
 import { Calendar, Clock, Plus, BookOpen, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRoutines } from '@/hooks/useRoutines';
 import DashboardHeader from '@/components/DashboardHeader';
 import RoutineTimeline from '@/components/RoutineTimeline';
 import AddRoutineModal from '@/components/AddRoutineModal';
 import GoogleClassroomPanel from '@/components/GoogleClassroomPanel';
-
-export interface RoutineItem {
-  id: string;
-  time: string;
-  title: string;
-  description?: string;
-  category: 'study' | 'rest' | 'class' | 'exercise' | 'meal';
-  duration: number; // in minutes
-}
+import LoginPage from '@/components/LoginPage';
 
 const StudyFlow = () => {
-  const [routines, setRoutines] = useState<RoutineItem[]>([
-    {
-      id: '1',
-      time: '08:00',
-      title: 'Morning Study Session',
-      description: 'Review notes from yesterday',
-      category: 'study',
-      duration: 90
-    },
-    {
-      id: '2',
-      time: '10:30',
-      title: 'Mathematics Class',
-      description: 'Linear Algebra',
-      category: 'class',
-      duration: 60
-    },
-    {
-      id: '3',
-      time: '14:00',
-      title: 'Assignment Work',
-      description: 'Complete physics homework',
-      category: 'study',
-      duration: 120
-    },
-    {
-      id: '4',
-      time: '16:30',
-      title: 'Break Time',
-      description: 'Light exercise and snack',
-      category: 'rest',
-      duration: 30
-    }
-  ]);
-
+  const { user, loading } = useAuth();
+  const { routines, loading: routinesLoading, addRoutine, deleteRoutine, updateRoutine } = useRoutines();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isGoogleConnected, setIsGoogleConnected] = useState(false);
 
-  const addRoutine = (routine: Omit<RoutineItem, 'id'>) => {
-    const newRoutine = {
-      ...routine,
-      id: Date.now().toString()
-    };
-    setRoutines([...routines, newRoutine].sort((a, b) => a.time.localeCompare(b.time)));
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const deleteRoutine = (id: string) => {
-    setRoutines(routines.filter(routine => routine.id !== id));
-  };
-
-  const editRoutine = (id: string, updatedRoutine: Partial<RoutineItem>) => {
-    setRoutines(routines.map(routine => 
-      routine.id === id ? { ...routine, ...updatedRoutine } : routine
-    ));
-  };
+  if (!user) {
+    return <LoginPage />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -109,8 +67,9 @@ const StudyFlow = () => {
 
             <RoutineTimeline 
               routines={routines}
+              loading={routinesLoading}
               onDelete={deleteRoutine}
-              onEdit={editRoutine}
+              onEdit={updateRoutine}
             />
           </div>
 

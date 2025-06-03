@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BookOpen, User, Settings } from 'lucide-react';
+import { BookOpen, User, Settings, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardHeaderProps {
   isGoogleConnected: boolean;
@@ -12,6 +13,16 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   isGoogleConnected, 
   onGoogleConnect 
 }) => {
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -52,8 +63,25 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               <Settings className="w-5 h-5 text-gray-600" />
             </Button>
             
-            <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-              <User className="w-5 h-5 text-gray-600" />
+            {user?.user_metadata?.avatar_url ? (
+              <img 
+                src={user.user_metadata.avatar_url} 
+                alt="Profile" 
+                className="w-8 h-8 rounded-full"
+              />
+            ) : (
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                <User className="w-5 h-5 text-gray-600" />
+              </Button>
+            )}
+
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hover:bg-gray-100"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-5 h-5 text-gray-600" />
             </Button>
           </div>
         </div>
