@@ -15,7 +15,6 @@ const StudyFlow = () => {
   const { user, loading } = useAuth();
   const { routines, loading: routinesLoading, addRoutine, deleteRoutine, updateRoutine } = useRoutines();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isGoogleConnected, setIsGoogleConnected] = useState(false);
 
   if (loading) {
     return (
@@ -34,10 +33,7 @@ const StudyFlow = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <DashboardHeader 
-        isGoogleConnected={isGoogleConnected}
-        onGoogleConnect={() => setIsGoogleConnected(!isGoogleConnected)}
-      />
+      <DashboardHeader />
       
       <main className="container mx-auto px-4 py-6 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -112,10 +108,7 @@ const StudyFlow = () => {
             </Card>
 
             {/* Google Classroom Integration */}
-            <GoogleClassroomPanel 
-              isConnected={isGoogleConnected}
-              onConnect={() => setIsGoogleConnected(true)}
-            />
+            <GoogleClassroomPanel />
           </div>
         </div>
       </main>

@@ -4,15 +4,7 @@ import { Button } from '@/components/ui/button';
 import { BookOpen, User, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
-interface DashboardHeaderProps {
-  isGoogleConnected: boolean;
-  onGoogleConnect: () => void;
-}
-
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ 
-  isGoogleConnected, 
-  onGoogleConnect 
-}) => {
+const DashboardHeader: React.FC = () => {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -38,27 +30,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
-            <Button
-              variant={isGoogleConnected ? "default" : "outline"}
-              onClick={onGoogleConnect}
-              className={`hidden sm:flex ${
-                isGoogleConnected 
-                  ? "bg-green-600 hover:bg-green-700 text-white" 
-                  : "border-blue-300 text-blue-600 hover:bg-blue-50"
-              }`}
-            >
-              {isGoogleConnected ? (
-                <>
-                  <div className="w-2 h-2 bg-green-300 rounded-full mr-2" />
-                  Google Connected
-                </>
-              ) : (
-                <>
-                  Connect Google
-                </>
-              )}
-            </Button>
-            
             <Button variant="ghost" size="icon" className="hover:bg-gray-100">
               <Settings className="w-5 h-5 text-gray-600" />
             </Button>
