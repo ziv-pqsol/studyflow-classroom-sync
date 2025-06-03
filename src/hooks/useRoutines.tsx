@@ -33,7 +33,13 @@ export const useRoutines = () => {
 
       if (error) throw error;
 
-      setRoutines(data || []);
+      // Type cast the data to match our RoutineItem interface
+      const typedRoutines: RoutineItem[] = (data || []).map(routine => ({
+        ...routine,
+        category: routine.category as RoutineItem['category']
+      }));
+
+      setRoutines(typedRoutines);
     } catch (error) {
       console.error('Error fetching routines:', error);
       toast({
@@ -61,7 +67,13 @@ export const useRoutines = () => {
 
       if (error) throw error;
 
-      setRoutines(prev => [...prev, data].sort((a, b) => a.time.localeCompare(b.time)));
+      // Type cast the returned data
+      const typedRoutine: RoutineItem = {
+        ...data,
+        category: data.category as RoutineItem['category']
+      };
+
+      setRoutines(prev => [...prev, typedRoutine].sort((a, b) => a.time.localeCompare(b.time)));
       
       toast({
         title: "Routine added",
@@ -90,9 +102,15 @@ export const useRoutines = () => {
 
       if (error) throw error;
 
+      // Type cast the returned data
+      const typedRoutine: RoutineItem = {
+        ...data,
+        category: data.category as RoutineItem['category']
+      };
+
       setRoutines(prev => 
         prev.map(routine => 
-          routine.id === id ? { ...routine, ...data } : routine
+          routine.id === id ? { ...routine, ...typedRoutine } : routine
         ).sort((a, b) => a.time.localeCompare(b.time))
       );
 
